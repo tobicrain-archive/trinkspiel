@@ -1,27 +1,33 @@
-import time
-import logging
-import hcsr04sensor
+"""Example of getting a direct reading from RPi.GPIO."""
 
-# Set the debug level for RPi.GPIO library
-logging.getLogger('RPi.GPIO').setLevel(logging.DEBUG)
+import RPi.GPIO as GPIO
+from hcsr04sensor import sensor
 
-def get_distance():
-    # Create an instance of the HCSR04 sensor
-    sensor = hcsr04sensor.HCSR04()
+# This script uses a static method inside the Measurement class
+# called basic_distance
+# No median readings pulled from a sample for error correction
+# No setmode in the library
+# No pin cleanups.  You handle all of these things in your own code
+# Just a simple return of a cm distance as reported directly from Rpi.GPIO
+# Only returns a metric value.
 
-    # Perform distance measurement
-    distance = sensor.distance_cm()
+# set gpio pins
+trig = 17
+echo = 27
 
-    return distance
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)  # use GPIO.BOARD for board pin values
+x = sensor.Measurement
+# use default temp of 20 Celcius
+distance_warm = x.basic_distance(trig, echo)
 
-def loop():
-    while True:
-        distance = get_distance()
-        print("Gemessene Entfernung: {} cm".format(distance))
-        time.sleep(1)
+# example of passing temperature reading
+# temperature affects speed of sound
+# Easily combine with a temperature sensor to pass the current temp
+temp = -30
+distance_cold = x.basic_distance(trig, echo, celsius=temp)
 
-if __name__ == '__main__':
-    try:
-        loop()
-    except KeyboardInterrupt:
-        pass
+print("The distance at  20 Celsius is {} cm's".format(distance_warm))
+print("The distance at -30 Celsius is {} cm's".format(distance_cold))
+# cleanup gpio pins.
+GPIO.cleanup((trig, echo))
