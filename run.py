@@ -1,3 +1,4 @@
+import RPi.GPIO as GPIO
 from hcsr04sensor import sensor
 
 # Created by Al Audet
@@ -7,23 +8,18 @@ from hcsr04sensor import sensor
 def main():
     """Calculate the distance of an object in centimeters using a HCSR04 sensor
        and a Raspberry Pi"""
-
-    trig_pin = 17
-    echo_pin = 27
+    # Use GPIO.BOARD values instead of BCM
+    trig_pin = 23
+    echo_pin = 24
+    gpio_mode = GPIO.BOARD  # library uses GPIO.BCM by default
     # Default values
     # unit = 'metric'
-    # temperature = 20 (room temp in Celsius)
+    # temperature = 20
 
-    #  Create a distance reading with the hcsr04 sensor module
-    value = sensor.Measurement(trig_pin, echo_pin)
+    # Create a distance reading with the hcsr04 sensor module
+    # using GPIO.BOARD pin values.
+    value = sensor.Measurement(trig_pin, echo_pin, gpio_mode=gpio_mode)
     raw_measurement = value.raw_distance()
-
-    # To overide default room temp you can pass the following to value
-    # This can be combined with a temperature sensor for cold weather apps.
-    # value = sensor.Measurement(trig_pin,
-    #                            echo_pin,
-    #                            temperature=2,
-    #                            )
 
     # Calculate the distance in centimeters
     print("The Distance = {} centimeters".format(round(raw_measurement, 1)))
