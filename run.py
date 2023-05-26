@@ -1,5 +1,9 @@
 import RPi.GPIO as GPIO
 import time
+import logging
+
+# Set the debug level for RPi.GPIO library
+logging.getLogger('RPi.GPIO').setLevel(logging.DEBUG)
 
 # GPIO-Pins für den Ultraschallsensor festlegen
 TRIGGER_PIN = 23
