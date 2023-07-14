@@ -61,6 +61,14 @@ def print_success(message):
 def print_error(message):
     print(f"\033[1;31m{message}\033[0m")  # Rote Textfarbe für Fehlermeldungen
 
+def blink_led(pin, duration, blink_rate):
+    GPIO.setup(pin, GPIO.OUT)
+    for _ in range(int(duration / blink_rate)):
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(blink_rate)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(blink_rate)
+
 if __name__ == '__main__':
     try:
         print_header()
@@ -92,6 +100,7 @@ if __name__ == '__main__':
 
         if trinken:
             print_error("Du musst trinken!")
+            blink_led(25, 10, 0.5)  # Pin 25 blinkt 10 Sekunden lang mit einer Rate von 0.5 Sekunden
 
         print_footer()
         GPIO.cleanup()
