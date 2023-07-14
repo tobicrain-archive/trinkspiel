@@ -15,7 +15,7 @@ GPIO.setup(GPIO_ECHO, GPIO.IN)
 
 def countdown_sleep(seconds):
     for i in range(seconds, 0, -1):
-        print(f"\033[1;33m{i}\033[0m", end='  ')  # Gelbe Textfarbe
+        print(f"\033[1;33m{i}\033[0m")  # Gelbe Textfarbe
         time.sleep(1)
     print("\033[1;32mWartezeit abgelaufen!\033[0m")  # Grüne Textfarbe
 
@@ -46,66 +46,40 @@ def distanz():
 
     return distanz
 
-def print_header():
-    print("\033[1m\033[4m--- TRINKSPIEL ---\033[0m\n")  # Fettdruck und Unterstrich für den Header
-
-def print_footer():
-    print("\n\033[1m--- SPIEL BEENDET ---\033[0m")  # Fettdruck für den Footer
-
-def print_info(message):
-    print(f"\033[1;34m{message}\033[0m")  # Blaue Textfarbe für allgemeine Informationen
-
-def print_success(message):
-    print(f"\033[1;32m{message}\033[0m")  # Grüne Textfarbe für Erfolgsmeldungen
-
-def print_error(message):
-    print(f"\033[1;31m{message}\033[0m")  # Rote Textfarbe für Fehlermeldungen
-
-def blink_led(pin, duration, blink_rate):
-    GPIO.setup(pin, GPIO.OUT)
-    for _ in range(int(duration / blink_rate)):
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(blink_rate)
-        GPIO.output(pin, GPIO.LOW)
-        time.sleep(blink_rate)
-
 if __name__ == '__main__':
     try:
-        print_header()
-
         input_wert = int(input("Geben Sie einen Min-Wert ein: "))
+
         max_input_wert = int(input("Geben Sie einen Max-Wert ein: "))
         zufallszahl = random.randint(input_wert, max_input_wert)
-        print_info(f"Zufallszahl: {zufallszahl}")
+        print("\033[1;35mZufallszahl:", zufallszahl, "\033[0m")  # Violette Textfarbe
         countdown_sleep(5)
 
         versuche = 3
         trinken = False
         while versuche > 0:
             abstand = distanz()
-            print(f"\nGemessene Entfernung = \033[1;35m{abstand:.1f} cm\033[0m")  # Violette Textfarbe
+            print("Gemessene Entfernung = %.1f cm" % abstand)
             toleranz = zufallszahl * 0.05  # Toleranz von 5%
             if zufallszahl - toleranz <= abstand <= zufallszahl + toleranz:
-                print_success("Richtige Distanz gehalten!")
+                print("\033[1;32mRichtige Distanz gehalten!\033[0m")  # Grüne Textfarbe
                 break
             else:
-                print_error("Falsche Distanz gehalten!")
+                print("\033[1;31mFalsche Distanz gehalten!\033[0m")  # Rote Textfarbe
                 versuche -= 1
                 if versuche > 0:
-                    print_info(f"Du hast noch {versuche} Versuche.")
+                    print("Du hast noch", versuche, "Versuche.")
                     countdown_sleep(3)
                 else:
                     trinken = True
-                    print_error("Keine Versuche mehr übrig. Das Spiel ist vorbei.")
+                    print("\033[1;31mKeine Versuche mehr übrig. Das Spiel ist vorbei.\033[0m")  # Rote Textfarbe
 
         if trinken:
-            print_error("Du musst trinken!")
-            blink_led(25, 10, 0.5)  # Pin 25 blinkt 10 Sekunden lang mit einer Rate von 0.5 Sekunden
-
-        print_footer()
+            print("\033[1;31mDu musst trinken!\033[0m")  # Rote Textfarbe
+            
         GPIO.cleanup()
 
     # Beim Abbruch durch STRG+C zurücksetzen
     except KeyboardInterrupt:
-        print_info("\nMessung vom Benutzer gestoppt")
+        print("\n\033[1;33mMessung vom Benutzer gestoppt\033[0m")  # Gelbe Textfarbe
         GPIO.cleanup()
