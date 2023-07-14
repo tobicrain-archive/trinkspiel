@@ -56,6 +56,7 @@ if __name__ == '__main__':
         countdown_sleep(5)
 
         versuche = 3
+        trinken = False
         while versuche > 0:
             abstand = distanz()
             print("Gemessene Entfernung = %.1f cm" % abstand)
@@ -64,13 +65,17 @@ if __name__ == '__main__':
                 print("\033[1;32mRichtige Distanz gehalten!\033[0m")  # Grüne Textfarbe
                 break
             else:
-                print("\033[1;31mFalsche Distanz gehalten. Du musst trinken!\033[0m")  # Rote Textfarbe
+                print("\033[1;31mFalsche Distanz gehalten!\033[0m")  # Rote Textfarbe
                 versuche -= 1
                 if versuche > 0:
                     print("Du hast noch", versuche, "Versuche.")
                     countdown_sleep(3)
                 else:
+                    trinken = True
                     print("\033[1;31mKeine Versuche mehr übrig. Das Spiel ist vorbei.\033[0m")  # Rote Textfarbe
+
+        if trinken:
+            print("\033[1;31mDu musst trinken!\033[0m")  # Rote Textfarbe
             
         GPIO.cleanup()
 
