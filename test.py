@@ -13,6 +13,12 @@ GPIO_ECHO = 24
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
 
+def countdown_sleep(seconds):
+    for i in range(seconds, 0, -1):
+        print(i)
+        time.sleep(1)
+    print("Wartezeit abgelaufen!")
+
 def distanz():
     # Setze Trigger auf HIGH
     GPIO.output(GPIO_TRIGGER, True)
@@ -51,7 +57,7 @@ if __name__ == '__main__':
         while versuche > 0:
             abstand = distanz()
             print("Gemessene Entfernung = %.1f cm" % abstand)
-            toleranz = zufallszahl * 0.03  # Toleranz von 2-3%
+            toleranz = zufallszahl * 0.05  # Toleranz von 2-3%
             if zufallszahl - toleranz <= abstand <= zufallszahl + toleranz:
                 print("Richtige Distanz gehalten!")
                 break
@@ -60,7 +66,7 @@ if __name__ == '__main__':
                 versuche -= 1
                 if versuche > 0:
                     print("Du hast noch", versuche, "Versuche.")
-                    time.sleep(1)
+                    countdown_sleep(3)
                 else:
                     print("Keine Versuche mehr übrig. Das Spiel ist vorbei.")
             
