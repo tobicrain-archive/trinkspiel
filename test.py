@@ -47,15 +47,24 @@ if __name__ == '__main__':
         print("Zufallszahl:", zufallszahl)
         time.sleep(5)
 
-        while True:
+        versuche = 3
+        while versuche > 0:
             abstand = distanz()
             print("Gemessene Entfernung = %.1f cm" % abstand)
             toleranz = zufallszahl * 0.03  # Toleranz von 2-3%
             if zufallszahl - toleranz <= abstand <= zufallszahl + toleranz:
                 print("Richtige Distanz gehalten!")
+                break
             else:
                 print("Falsche Distanz gehalten. Du musst trinken!")
-            time.sleep(1)
+                versuche -= 1
+                if versuche > 0:
+                    print("Du hast noch", versuche, "Versuche.")
+                    time.sleep(1)
+                else:
+                    print("Keine Versuche mehr übrig. Das Spiel ist vorbei.")
+            
+        GPIO.cleanup()
 
     # Beim Abbruch durch STRG+C zurücksetzen
     except KeyboardInterrupt:
