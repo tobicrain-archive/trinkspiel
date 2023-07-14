@@ -51,7 +51,7 @@ if __name__ == '__main__':
         input_wert = int(input("Geben Sie einen Wert ein: "))
         zufallszahl = random.randint(1, input_wert)
         print("Zufallszahl:", zufallszahl)
-        time.sleep(5)
+        countdown_sleep(5)
 
         versuche = 3
         while versuche > 0:
