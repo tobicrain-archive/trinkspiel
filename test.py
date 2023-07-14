@@ -15,9 +15,9 @@ GPIO.setup(GPIO_ECHO, GPIO.IN)
 
 def countdown_sleep(seconds):
     for i in range(seconds, 0, -1):
-        print(i)
+        print(f"\033[1;33m{i}\033[0m")  # Gelbe Textfarbe
         time.sleep(1)
-    print("Wartezeit abgelaufen!")
+    print("\033[1;32mWartezeit abgelaufen!\033[0m")  # Grüne Textfarbe
 
 def distanz():
     # Setze Trigger auf HIGH
@@ -48,31 +48,33 @@ def distanz():
 
 if __name__ == '__main__':
     try:
-        input_wert = int(input("Geben Sie einen Wert ein: "))
-        zufallszahl = random.randint(1, input_wert)
-        print("Zufallszahl:", zufallszahl)
+        input_wert = int(input("Geben Sie einen Min-Wert ein: "))
+
+        max_input_wert = int(input("Geben Sie einen Max-Wert ein: "))
+        zufallszahl = random.randint(input_wert, max_input_wert)
+        print("\033[1;35mZufallszahl:", zufallszahl, "\033[0m")  # Violette Textfarbe
         countdown_sleep(5)
 
         versuche = 3
         while versuche > 0:
             abstand = distanz()
             print("Gemessene Entfernung = %.1f cm" % abstand)
-            toleranz = zufallszahl * 0.05  # Toleranz von 2-3%
+            toleranz = zufallszahl * 0.05  # Toleranz von 5%
             if zufallszahl - toleranz <= abstand <= zufallszahl + toleranz:
-                print("Richtige Distanz gehalten!")
+                print("\033[1;32mRichtige Distanz gehalten!\033[0m")  # Grüne Textfarbe
                 break
             else:
-                print("Falsche Distanz gehalten. Du musst trinken!")
+                print("\033[1;31mFalsche Distanz gehalten. Du musst trinken!\033[0m")  # Rote Textfarbe
                 versuche -= 1
                 if versuche > 0:
                     print("Du hast noch", versuche, "Versuche.")
                     countdown_sleep(3)
                 else:
-                    print("Keine Versuche mehr übrig. Das Spiel ist vorbei.")
+                    print("\033[1;31mKeine Versuche mehr übrig. Das Spiel ist vorbei.\033[0m")  # Rote Textfarbe
             
         GPIO.cleanup()
 
     # Beim Abbruch durch STRG+C zurücksetzen
     except KeyboardInterrupt:
-        print("Messung vom Benutzer gestoppt")
+        print("\n\033[1;33mMessung vom Benutzer gestoppt\033[0m")  # Gelbe Textfarbe
         GPIO.cleanup()
